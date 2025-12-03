@@ -36,8 +36,6 @@ Bash
 npm install
 npm run tauri dev
 🏗️ Architecture
-code
-Mermaid
 graph TD
     UI[React Frontend] <--> Tauri[Tauri/Rust Core]
     Tauri <--> Mongos[Mongos Router]
