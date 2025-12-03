@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  # --- Config Server ---
+  configsvr:
+    image: mongo:6.0
+    container_name: configsvr
+    command: mongod --configsvr --replSet rs-config --port 27019 --bind_ip_all
+    ports:
+      - "27019:27019"
+    volumes:
+      - config-data:/data/configdb
+    networks:
+      - mongo-cluster
+
+  # --- Shard 1 ---
+  shard1:
+    image: mongo:6.0
+    container_name: shard1
+    command: mongod --shardsvr --replSet rs-shard1 --port 27018 --bind_ip_all
+    ports:
+      - "27018:27018"
+    volumes:
+      - shard1-data:/data/db
+    networks:
+      - mongo-cluster
+
+  # --- Shard 2 (НОВЫЙ) ---
+  shard2:
+    image: mongo:6.0
+    container_name: shard2
+    command: mongod --shardsvr --replSet rs-shard2 --port 27020 --bind_ip_all
+    ports:
+      - "27020:27020"
+    volumes:
+      - shard2-data:/data/db
+    networks:
+      - mongo-cluster
+
+  # --- Shard 3 (НОВЫЙ) ---
+  shard3:
+    image: mongo:6.0
+    container_name: shard3
+    command: mongod --shardsvr --replSet rs-shard3 --port 27021 --bind_ip_all
+    ports:
+      - "27021:27021"
+    volumes:
+      - shard3-data:/data/db
+    networks:
+      - mongo-cluster
+
+  # --- Router (Mongos) ---
+  mongos:
+    image: mongo:6.0
+    container_name: mongos
+    command: mongos --configdb rs-config/configsvr:27019 --bind_ip_all
+    ports:
+      - "27017:27017"
+    depends_on:
+      - configsvr
+      - shard1
+      - shard2
+      - shard3
+    networks:
+      - mongo-cluster
+
+volumes:
+  config-data:
+  shard1-data:
+  shard2-data: # Новый том
+  shard3-data: # Новый том
+
+networks:
+  mongo-cluster:

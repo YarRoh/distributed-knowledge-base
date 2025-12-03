@@ -1,0 +1,21 @@
+# --- Rust ---
+/src-tauri/target/
+/target/
+**/*.rs.bk
+
+# --- Node / Frontend ---
+node_modules/
+dist/
+.DS_Store
+
+# --- Docker & Logs ---
+docker/*.log
+# Если вдруг данные БД лежат в папке проекта (на всякий случай)
+docker/data/
+db-data/
+
+# --- IDE ---
+.idea/
+.vscode/
+*.swp
+*.iml
